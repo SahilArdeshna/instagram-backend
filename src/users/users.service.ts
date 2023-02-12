@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+
 import { User } from './interfaces/user.interface';
-import { S3COS as IBMCloud } from 'src/utils/ibm_cloud';
-const cloud = new IBMCloud();
+import { s3Bucket as AWSCloud } from 'src/utils/aws_cloud';
+
+const cloud = new AWSCloud();
 
 @Injectable()
 export class UsersService {

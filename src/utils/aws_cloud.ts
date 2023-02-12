@@ -1,35 +1,17 @@
-import * as IBMCOS from 'ibm-cos-sdk';
+import { S3 } from 'aws-sdk';
 
 import { CODE, MESSAGE } from '../constants';
 
-const bucketName = process.env.IBM_BACKET_NAME;
-const defaultConfig = {
-  apiKeyId: process.env.IBM_API_KEY,
-  endpoint: process.env.IBM_ENDPOINT,
-  serviceInstanceId: process.env.IBM_SERVICE_INSTANCE_ID,
-};
+const bucketName = process.env.AWS_BUCKET_NAME;
 
-// S3 configuration
-const s3Config = async () => {
-  try {
-    return await new IBMCOS.S3(defaultConfig);
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export class S3COS {
-  s3: IBMCOS.S3;
+export class s3Bucket {
+  s3: S3;
   constructor() {
-    s3Config()
-      .then((data) => {
-        this.s3 = data;
-      })
-      .catch((err) => console.log(err));
+    this.s3 = new S3();
   }
 
   // Post file in bucket
-  async createObjectInBucket(file) {
+  async createObjectInBucket(file: any) {
     const fileName = `${new Date().getTime()}_${file.originalname.replace(
       /[\s()]+/g,
       '_',
@@ -37,23 +19,22 @@ export class S3COS {
 
     try {
       const fileObject = {
-        Bucket: bucketName,
         Key: fileName,
+        Bucket: bucketName,
         Body: Buffer.from(file.buffer),
       };
 
-      const res = await this.s3.putObject(fileObject).promise();
+      const res = await this.s3.upload(fileObject).promise();
       if (!res) {
         throw {
-          messsge: MESSAGE.uploadFailed,
           code: CODE.badRequest,
+          messsge: MESSAGE.uploadFailed,
         };
       }
 
-      const url = `https://${bucketName}.${defaultConfig.endpoint}/${fileName}`;
       return {
-        url,
-        key: fileName,
+        key: res.Key,
+        url: res.Location,
       };
     } catch (err) {
       console.log(err);
@@ -64,8 +45,8 @@ export class S3COS {
   async deleteObject(key: string) {
     try {
       const deleteObjectP = {
-        Bucket: bucketName,
         Key: key,
+        Bucket: bucketName,
       };
 
       return await this.s3.deleteObject(deleteObjectP).promise();
@@ -87,11 +68,13 @@ export class S3COS {
 
   // Get perticular file from bucket
   async itemObject() {
+    console.log('bucketName', bucketName);
+
     try {
       const data = await this.s3
         .getObject({
           Bucket: bucketName,
-          Key: 'SampleVideo_720x480_10mb.mkv',
+          Key: 'default-profile.png',
         })
         .promise();
 

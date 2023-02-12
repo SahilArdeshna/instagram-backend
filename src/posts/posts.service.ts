@@ -1,9 +1,11 @@
 import * as mongoose from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { PostI } from './interfaces/post.interface';
-import { S3COS as IBMCloud } from 'src/utils/ibm_cloud';
 import { InjectModel } from '@nestjs/mongoose';
-const cloud = new IBMCloud();
+
+import { PostI } from './interfaces/post.interface';
+import { s3Bucket as AWSCloud } from 'src/utils/aws_cloud';
+
+const cloud = new AWSCloud();
 
 import { authorProjection } from '../utils/projection';
 
