@@ -1,13 +1,15 @@
 import { S3 } from 'aws-sdk';
+import { ConfigService } from '@nestjs/config';
 
 import { CODE, MESSAGE } from '../constants';
 
-const bucketName = process.env.AWS_BUCKET_NAME;
-
 export class s3Bucket {
   s3: S3;
+  config: ConfigService;
+
   constructor() {
     this.s3 = new S3();
+    this.config = new ConfigService();
   }
 
   // Post file in bucket
@@ -20,8 +22,8 @@ export class s3Bucket {
     try {
       const fileObject = {
         Key: fileName,
-        Bucket: bucketName,
         Body: Buffer.from(file.buffer),
+        Bucket: this.config.get('AWS_BUCKET_NAME'),
       };
 
       const res = await this.s3.upload(fileObject).promise();
@@ -46,7 +48,7 @@ export class s3Bucket {
     try {
       const deleteObjectP = {
         Key: key,
-        Bucket: bucketName,
+        Bucket: this.config.get('AWS_BUCKET_NAME'),
       };
 
       return await this.s3.deleteObject(deleteObjectP).promise();
@@ -68,13 +70,11 @@ export class s3Bucket {
 
   // Get perticular file from bucket
   async itemObject() {
-    console.log('bucketName', bucketName);
-
     try {
       const data = await this.s3
         .getObject({
-          Bucket: bucketName,
           Key: 'default-profile.png',
+          Bucket: this.config.get('AWS_BUCKET_NAME'),
         })
         .promise();
 

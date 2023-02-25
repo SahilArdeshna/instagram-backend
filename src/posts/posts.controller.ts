@@ -1,23 +1,24 @@
-import {
-  HttpException,
-  Req,
-  Controller,
-  Get,
-  Post,
-  UploadedFiles,
-  UseGuards,
-  UseInterceptors,
-  Delete,
-  Param,
-} from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CODE, MESSAGE, VALIDATION } from 'src/constants';
-import { UsersService } from 'src/users/users.service';
-import { fileFilter } from 'src/utils/file_helper';
-import { PostsService } from './posts.service';
 import * as mongoose from 'mongoose';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import {
+  Get,
+  Req,
+  Post,
+  Param,
+  Delete,
+  UseGuards,
+  Controller,
+  UploadedFiles,
+  HttpException,
+  UseInterceptors,
+} from '@nestjs/common';
+
+import { PostsService } from './posts.service';
+import { fileFilter } from 'src/utils/file_helper';
 import { PostI } from './interfaces/post.interface';
+import { UsersService } from 'src/users/users.service';
+import { CODE, MESSAGE, VALIDATION } from 'src/constants';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -63,11 +64,11 @@ export class PostsController {
       };
     } catch (err) {
       console.log({ err });
-      throw new HttpException(err.message, err.code);
+      throw new HttpException(err.message, err.status);
     }
   }
 
-  // Get user and hif following user's all posts
+  // Get user and his following user's all posts
   @UseGuards(JwtAuthGuard)
   @Get()
   async posts(@Req() req): Promise<PostI[]> {

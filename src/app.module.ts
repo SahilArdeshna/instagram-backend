@@ -8,11 +8,14 @@ import { UserModule } from './users/users.module';
 
 @Module({
   imports: [
-    UserModule,
-    ConfigModule.forRoot({ envFilePath: `${__dirname}/../.env` }),
+    ConfigModule.forRoot({
+      envFilePath: `${__dirname}/../.env`,
+      isGlobal: true,
+    }),
     MongooseModule.forRoot(process.env.MONGODB_URI, {
       useFindAndModify: false,
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
