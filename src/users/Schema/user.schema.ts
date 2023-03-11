@@ -20,6 +20,7 @@ export const UserSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
+    website: { type: String },
     bio: { type: String },
     profileImage: {
       url: { type: String },

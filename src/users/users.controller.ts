@@ -3,13 +3,12 @@ import {
   Get,
   HttpException,
   Param,
-  Patch,
+  Post,
   Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import * as mongoose from 'mongoose';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from './interfaces/user.interface';
 import { UsersService } from './users.service';
@@ -106,7 +105,7 @@ export class UsersController {
 
   // Uplaod profile image
   @UseGuards(JwtAuthGuard)
-  @Patch('uploadImage')
+  @Post('uploadImage')
   @UseInterceptors(
     FileInterceptor('profileImage', { fileFilter: imageProfileFilter }),
   )
@@ -145,7 +144,7 @@ export class UsersController {
 
   // Delete profile image
   @UseGuards(JwtAuthGuard)
-  @Patch('deleteImage')
+  @Post('deleteImage')
   async deleteImage(
     @Req() req,
   ): Promise<{ statusCode: number; message: string }> {
@@ -173,6 +172,31 @@ export class UsersController {
         statusCode: CODE.success,
         message: MESSAGE.profileImageRemoved,
       };
+    } catch (err) {
+      throw new HttpException(err.message, err.code);
+    }
+  }
+
+  // Get user by userName
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async user(@Param('id') id: string): Promise<User> {
+    try {
+      // Fetch user
+      const user = await this.usersService.getUserDetails({ _id: id });
+
+      if (!user) {
+        throw {
+          code: CODE.badRequest,
+          message: MESSAGE.userNotFound,
+        };
+      }
+
+      // Remove unnecessary data
+      delete user.__v;
+      delete user.password;
+
+      return user;
     } catch (err) {
       throw new HttpException(err.message, err.code);
     }
