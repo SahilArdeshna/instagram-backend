@@ -28,9 +28,10 @@ export class UsersController {
   // Get users
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getAll(): Promise<User[]> {
+  async getAll(@Req() req): Promise<User[]> {
     try {
-      return this.usersService.getAll();
+      const userId = req.user._id;
+      return this.usersService.getAll(userId);
     } catch (err) {
       throw new HttpException(err.message, err.code);
     }

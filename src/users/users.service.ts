@@ -11,8 +11,11 @@ const cloud = new AWSCloud();
 export class UsersService {
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
-  async getAll(): Promise<User[]> {
-    return await this.userModel.find();
+  async getAll(userId: string): Promise<User[]> {
+    return await this.userModel.find(
+      { _id: { $ne: userId } },
+      { followers: 0, following: 0, password: 0, __v: 0 },
+    );
   }
 
   // Get user details method
