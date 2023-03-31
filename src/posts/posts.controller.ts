@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   Get,
+  Put,
   Req,
   Post,
   Param,
@@ -113,6 +114,46 @@ export class PostsController {
       return post;
     } catch (err) {
       console.log({ err });
+      throw new HttpException(err.message, err.code);
+    }
+  }
+
+  // Like post
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/like')
+  async likePost(
+    @Req() req,
+    @Param('id') id: string,
+  ): Promise<{ code: number; message: string }> {
+    try {
+      await this.postsService.likePost(req.user._id, id);
+
+      return {
+        code: 200,
+        message: 'Post liked successfully',
+      };
+    } catch (err) {
+      console.log(err);
+      throw new HttpException(err.message, err.code);
+    }
+  }
+
+  // Unlike post
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/unlike')
+  async unlikePost(
+    @Req() req,
+    @Param('id') id: string,
+  ): Promise<{ code: number; message: string }> {
+    try {
+      await this.postsService.unlikePost(req.user._id, id);
+
+      return {
+        code: 200,
+        message: 'Post unliked successfully',
+      };
+    } catch (err) {
+      console.log(err);
       throw new HttpException(err.message, err.code);
     }
   }

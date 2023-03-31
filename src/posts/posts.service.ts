@@ -173,4 +173,18 @@ export class PostsService {
         });
     });
   }
+
+  // Like post
+  async likePost(userId: string, postId: string): Promise<PostI> {
+    return await this.postModel.findByIdAndUpdate(postId, {
+      $push: { likes: userId },
+    });
+  }
+
+  // Unlike post
+  async unlikePost(userId: string, postId: string): Promise<PostI> {
+    return await this.postModel.findByIdAndUpdate(postId, {
+      $pull: { likes: userId },
+    });
+  }
 }
