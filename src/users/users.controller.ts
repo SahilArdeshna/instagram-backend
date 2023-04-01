@@ -31,7 +31,11 @@ export class UsersController {
   async getAll(@Req() req): Promise<User[]> {
     try {
       const userId = req.user._id;
-      return this.usersService.getAll(userId);
+      const page = req.query.page;
+      const limit = req.query.limit;
+      const search = req.query.search;
+
+      return this.usersService.getAll(userId, page, limit, search);
     } catch (err) {
       throw new HttpException(err.message, err.code);
     }
