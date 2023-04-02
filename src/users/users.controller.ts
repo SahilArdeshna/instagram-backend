@@ -182,6 +182,30 @@ export class UsersController {
     }
   }
 
+  // Get oauth user
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async me(@Req() req): Promise<User> {
+    try {
+      const user = await this.usersService.findUserById(req.user._id);
+
+      if (!user) {
+        throw {
+          code: CODE.badRequest,
+          message: MESSAGE.userNotFound,
+        };
+      }
+
+      // Remove unnecessary data
+      delete user.__v;
+      delete user.password;
+
+      return user;
+    } catch (err) {
+      throw new HttpException(err.message, err.code);
+    }
+  }
+
   // Get user by userName
   @UseGuards(JwtAuthGuard)
   @Get(':id')
