@@ -265,4 +265,27 @@ export class UsersController {
       throw new HttpException(err.message, err.code);
     }
   }
+
+  // Get social stats
+  @UseGuards(JwtAuthGuard)
+  @Get(':id/social-stats')
+  async socialStats(@Param('id') id: string, @Req() req): Promise<User[]> {
+    try {
+      const type = req.query.type;
+
+      // Fetch user
+      const user = await this.usersService.getSocialStats(id, type);
+
+      if (!user) {
+        throw {
+          code: CODE.badRequest,
+          message: MESSAGE.userNotFound,
+        };
+      }
+
+      return user;
+    } catch (err) {
+      throw new HttpException(err.message, err.code);
+    }
+  }
 }

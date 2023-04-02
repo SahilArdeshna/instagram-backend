@@ -1,4 +1,5 @@
 import { Model } from 'mongoose';
+import { ObjectId } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -96,5 +97,30 @@ export class UsersService {
     key: string;
   }): Promise<any> {
     return await cloud.deleteObject(profileImage.key);
+  }
+
+  // Get social stats
+  async getSocialStats(id: string, type: string) {
+    return await this.userModel.aggregate([
+      { $match: { _id: new ObjectId(id) } },
+      {
+        $lookup: {
+          from: 'users',
+          let: { id: `$${type}` },
+          pipeline: [
+            { $match: { $expr: { $in: ['$_id', '$$id'] } } },
+            { $project: { password: 0, __v: 0 } },
+          ],
+          as: 'resultObjects',
+        },
+      },
+      { $unwind: '$resultObjects' },
+      {
+        $group: {
+          _id: '$_id',
+          [type]: { $push: '$resultObjects' },
+        },
+      },
+    ]);
   }
 }
