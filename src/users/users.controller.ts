@@ -17,6 +17,7 @@ import { CODE, MESSAGE } from 'src/constants';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { PostsService } from 'src/posts/posts.service';
 import { PostI } from 'src/posts/interfaces/post.interface';
+import { isEmpty } from 'lodash';
 
 @Controller('users')
 export class UsersController {
@@ -276,7 +277,7 @@ export class UsersController {
       // Fetch user
       const user = await this.usersService.getSocialStats(id, type);
 
-      if (!user) {
+      if (isEmpty(user)) {
         throw {
           code: CODE.badRequest,
           message: MESSAGE.userNotFound,

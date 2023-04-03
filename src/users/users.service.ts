@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { User } from './interfaces/user.interface';
 import { s3Bucket as AWSCloud } from 'src/utils/aws_cloud';
+import { isEmpty } from 'lodash';
 
 const cloud = new AWSCloud();
 
@@ -101,7 +102,7 @@ export class UsersService {
 
   // Get social stats
   async getSocialStats(id: string, type: string) {
-    return await this.userModel.aggregate([
+    const data = await this.userModel.aggregate([
       { $match: { _id: new ObjectId(id) } },
       {
         $lookup: {
@@ -122,5 +123,7 @@ export class UsersService {
         },
       },
     ]);
+
+    return !isEmpty(data) ? data[0] : {};
   }
 }
