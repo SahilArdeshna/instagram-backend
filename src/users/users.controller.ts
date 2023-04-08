@@ -274,17 +274,17 @@ export class UsersController {
     try {
       const type = req.query.type;
 
-      // Fetch user
-      const user = await this.usersService.getSocialStats(id, type);
+      // Fetch user's social stats
+      return await this.usersService.getSocialStats(id, type);
 
-      if (isEmpty(user)) {
-        throw {
-          code: CODE.badRequest,
-          message: MESSAGE.userNotFound,
-        };
-      }
+      // if (isEmpty(user)) {
+      //   throw {
+      //     code: CODE.badRequest,
+      //     message: MESSAGE.userNotFound,
+      //   };
+      // }
 
-      return user;
+      // return user;
     } catch (err) {
       throw new HttpException(err.message, err.code);
     }
