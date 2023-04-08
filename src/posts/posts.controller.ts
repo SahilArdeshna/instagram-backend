@@ -15,11 +15,11 @@ import {
 } from '@nestjs/common';
 
 import { PostsService } from './posts.service';
-import { fileFilter } from 'src/utils/file_helper';
+import { fileFilter } from '../utils/file_helper';
 import { PostI } from './interfaces/post.interface';
-import { UsersService } from 'src/users/users.service';
-import { CODE, MESSAGE, VALIDATION } from 'src/constants';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UsersService } from '../users/users.service';
+import { CODE, MESSAGE, VALIDATION } from '../constants';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('posts')
 export class PostsController {

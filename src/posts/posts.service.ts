@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { PostI } from './interfaces/post.interface';
-import { s3Bucket as AWSCloud } from 'src/utils/aws_cloud';
+import { s3Bucket as AWSCloud } from '../utils/aws_cloud';
 
 const cloud = new AWSCloud();
 

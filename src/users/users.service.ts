@@ -1,11 +1,11 @@
+import { isEmpty } from 'lodash';
 import { Model } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { User } from './interfaces/user.interface';
-import { s3Bucket as AWSCloud } from 'src/utils/aws_cloud';
-import { isEmpty } from 'lodash';
+import { s3Bucket as AWSCloud } from '../utils/aws_cloud';
 
 const cloud = new AWSCloud();
 

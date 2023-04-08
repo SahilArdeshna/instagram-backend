@@ -1,10 +1,10 @@
 import { Controller, Post, Body, HttpException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginUserDto } from 'src/users/dto/user.dto';
-import { User } from 'src/users/interfaces/user.interface';
-import { UsersService } from 'src/users/users.service';
-import { CODE, MESSAGE, emailRegex, VALIDATION } from 'src/constants';
-import { encryptPassword, verifyPassword } from 'src/utils/encryption';
+import { CreateUserDto, LoginUserDto } from '../users/dto/user.dto';
+import { User } from '../users/interfaces/user.interface';
+import { UsersService } from '../users/users.service';
+import { CODE, MESSAGE, emailRegex, VALIDATION } from '../constants';
+import { encryptPassword, verifyPassword } from '../utils/encryption';
 
 @Controller('auth')
 export class AuthController {

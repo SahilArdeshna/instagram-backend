@@ -10,14 +10,14 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { User } from './interfaces/user.interface';
+
 import { UsersService } from './users.service';
-import { imageProfileFilter } from 'src/utils/file_helper';
-import { CODE, MESSAGE } from 'src/constants';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { PostsService } from 'src/posts/posts.service';
-import { PostI } from 'src/posts/interfaces/post.interface';
-import { isEmpty } from 'lodash';
+import { imageProfileFilter } from '../utils/file_helper';
+import { CODE, MESSAGE } from '../constants';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PostsService } from '../posts/posts.service';
+import { PostI } from '../posts/interfaces/post.interface';
+import { User } from './interfaces/user.interface';
 
 @Controller('users')
 export class UsersController {
