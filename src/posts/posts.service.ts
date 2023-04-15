@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import * as mongoose from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -176,15 +177,25 @@ export class PostsService {
 
   // Like post
   async likePost(userId: string, postId: string): Promise<PostI> {
-    return await this.postModel.findByIdAndUpdate(postId, {
+    await this.postModel.findByIdAndUpdate(postId, {
       $push: { likes: userId },
     });
+
+    const posts = await this.post(new ObjectId(postId), new ObjectId(userId));
+    return posts[0];
   }
 
   // Unlike post
   async unlikePost(userId: string, postId: string): Promise<PostI> {
-    return await this.postModel.findByIdAndUpdate(postId, {
-      $pull: { likes: userId },
-    });
+    await this.postModel.findByIdAndUpdate(
+      postId,
+      {
+        $pull: { likes: userId },
+      },
+      { new: true },
+    );
+
+    const posts = await this.post(new ObjectId(postId), new ObjectId(userId));
+    return posts[0];
   }
 }

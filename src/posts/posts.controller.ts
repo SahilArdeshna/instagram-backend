@@ -124,11 +124,12 @@ export class PostsController {
   async likePost(
     @Req() req,
     @Param('id') id: string,
-  ): Promise<{ code: number; message: string }> {
+  ): Promise<{ code: number; post: PostI; message: string }> {
     try {
-      await this.postsService.likePost(req.user._id, id);
+      const post = await this.postsService.likePost(req.user._id, id);
 
       return {
+        post,
         code: 200,
         message: 'Post liked successfully',
       };
@@ -144,11 +145,12 @@ export class PostsController {
   async unlikePost(
     @Req() req,
     @Param('id') id: string,
-  ): Promise<{ code: number; message: string }> {
+  ): Promise<{ code: number; post: PostI; message: string }> {
     try {
-      await this.postsService.unlikePost(req.user._id, id);
+      const post = await this.postsService.unlikePost(req.user._id, id);
 
       return {
+        post,
         code: 200,
         message: 'Post unliked successfully',
       };
