@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   Get,
@@ -89,7 +89,7 @@ export class PostsController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async post(@Req() req, @Param('id') id: string): Promise<PostI> {
-    const postId = mongoose.Types.ObjectId(id);
+    const postId = new ObjectId(id);
     try {
       // Get user's posts
       const posts = await this.postsService.post(postId, req.user._id);
