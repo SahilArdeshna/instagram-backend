@@ -4,6 +4,7 @@ import {
   HttpException,
   Param,
   Post,
+  Put,
   Req,
   UploadedFile,
   UseGuards,
@@ -156,14 +157,8 @@ export class UsersController {
   ): Promise<{ statusCode: number; message: string }> {
     try {
       const userId = req.user._id;
-      const updateData = {
-        $unset: {
-          profileImage: 1,
-        },
-      };
 
-      // Remove profile image data from database
-      const user = await this.usersService.updateUser(userId, updateData);
+      const user = await this.usersService.findUserById(userId);
       if (!user) {
         throw {
           code: CODE.internalServer,
@@ -173,6 +168,15 @@ export class UsersController {
 
       // Profile image from cloud
       this.usersService.deleteProfileImage(user.profileImage);
+
+      const updateData = {
+        $unset: {
+          profileImage: 1,
+        },
+      };
+
+      // Remove profile image data from database
+      await this.usersService.updateUser(userId, updateData);
 
       return {
         statusCode: CODE.success,
@@ -285,6 +289,21 @@ export class UsersController {
       // }
 
       // return user;
+    } catch (err) {
+      throw new HttpException(err.message, err.code);
+    }
+  }
+
+  // Get social stats
+  @UseGuards(JwtAuthGuard)
+  @Put('update')
+  async updateUser(@Req() req): Promise<User> {
+    try {
+      const data = req.body;
+      const userId = req.user._id;
+
+      // Fetch user's social stats
+      return await this.usersService.updateUser(userId, data);
     } catch (err) {
       throw new HttpException(err.message, err.code);
     }

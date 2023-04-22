@@ -89,7 +89,7 @@ export class UsersService {
 
   // Update user
   async updateUser(userId: string, query: any): Promise<User> {
-    return await this.userModel.findByIdAndUpdate(userId, query);
+    return await this.userModel.findByIdAndUpdate(userId, query, { new: true });
   }
 
   // Remove profile image
